@@ -1,0 +1,46 @@
+
+####################
+#UNDERSAMPLING
+####################
+
+summary(DATOS.train$TIPOCONTACTO)
+head(DATOS.train)
+
+cne <- subset(DATOS.train, DATOS.train$TIPOCONTACTO == "CNE")
+filas.cne <-   row.names(cne)
+
+sampling.cne <- sample(filas.cne,1700, F)
+
+data.balanceada <- rbind(subset(DATOS.train, DATOS.train$TIPOCONTACTO == "CEF"),cne[sampling.cne,])
+
+summary(data.balanceada$TIPOCONTACTO)
+
+##########################3
+# OVERSAMPLING
+##########################
+
+
+cef <- subset(DATOS.train, DATOS.train$TIPOCONTACTO == "CEF")
+filas.cef <- row.names(cef)
+
+sampling.cef <- sample(filas.cef, 4044, replace = T)
+
+oversampling <- rbind(subset(DATOS.train, DATOS.train$TIPOCONTACTO == "CNE"), cef[sampling.cef,])
+
+summary(oversampling$TIPOCONTACTO)
+
+########################################
+#SMOTE
+#####################################
+
+#Con balanceo
+library(unbalanced)
+Y <- as.factor(as.numeric(DATOS.train$TIPOCONTACTO))
+X <- DATOS.train[, c(1:6,9,10)]
+str(X)
+str(Y)
+balanceosmote <- ubSMOTE(X, Y, k=4, verbose = FALSE)
+dim(balanceosmote$X)
+prop.table(table(balanceosmote$Y))
+prop.table(table(DATOS.train$TIPOCONTACTO))
+
